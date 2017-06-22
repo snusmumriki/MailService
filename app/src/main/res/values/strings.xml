@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Delivery Service</string>
+
+    <string name="prompt_email">Логин</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Войти</string>
+    <string name="action_sign_in_short">Войти</string>
+    <string name="error_invalid_email">Логин не существует</string>
+    <string name="error_invalid_password">Пароль слишком короткий</string>
+    <string name="error_incorrect_password">Неверный пароль</string>
+    <string name="error_field_required">Это поле необходимо заполнить</string>
+    <string name="permission_rationale">Необходим доступ к контактам для автозаполнения поля</string>
+    <string name="title_activity_main">Главная</string>
+    <string name="action_settings">Настройки</string>
+    <string name="title_activity_task">Задача</string>
+    <string name="title_activity_edit">Редактировать</string>
+    <string name="action_logout">Выйти из системы</string>
+    <string name="address_task">Адрес</string>
+    <string name="phone_task">Телефон</string>
+    <string name="time_task">Время</string>
+    <string name="contact_task">Контактное лицо</string>
+    <string name="barcode_task">Накладные</string>
+    <string name="scan_barcode_btn">Сканировать штрих-код</string>
+    <string name="input_barcode_btn">Добавить штрих-код вручную</string>
+    <string name="action_done">Сохранить</string>
+    <string name="name_task">Название фирмы</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
