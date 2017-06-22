@@ -65,7 +65,7 @@ public class EditActivity extends AppCompatActivity {
             contactField.setText(contact);
 
             nameField.setText(name);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) { }
 
     }
 
