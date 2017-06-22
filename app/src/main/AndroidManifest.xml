@@ -40,7 +40,16 @@
         <activity
             android:name=".EditActivity"
             android:label="@string/title_activity_edit"
-            android:theme="@style/AppTheme.Accept"></activity>
+            android:theme="@style/AppTheme.Accept" />
+        <activity
+            android:name=".BarEditActivity"
+            android:label="@string/title_activity_bar_edit"
+            android:parentActivityName=".TaskActivity"
+            android:theme="@style/AppTheme.Accept">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.lort.mail.TaskActivity" />
+        </activity>
     </application>
 
 </manifest>

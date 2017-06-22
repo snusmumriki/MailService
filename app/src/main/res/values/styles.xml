@@ -17,7 +17,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    
+
     <style name="AppTheme.Accept">
         <item name="android:homeAsUpIndicator">@drawable/ic_close_white</item>
         <item name="windowActionBar">false</item>

@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -72,13 +74,11 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         contactField = (EditText) findViewById(R.id.task_contact);
 
         barcodesField.setLayoutManager(new LinearLayoutManager(this));
+        barcodes.add(new Barcode());
         BarcodeAdapter adapter = new BarcodeAdapter(barcodes);
         barcodesField.setAdapter(adapter);
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         barcodesField.setItemAnimator(itemAnimator);
-
-        Button buttonScan = (Button) findViewById(R.id.task_scan_bar);
-        Button buttonInput = (Button) findViewById(R.id.task_input_bar);
 
         getSupportActionBar().setTitle(name);
         addressField.setText(address);
@@ -86,57 +86,27 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         phoneField.setText(phone);
         contactField.setText(contact);
 
+        final BottomNavigationView bottomNavigationView = (BottomNavigationView)
+                findViewById(R.id.bottom_navigation);
 
-        buttonScan.setOnClickListener(this);
-        buttonInput.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
-                builder.setTitle("Накладная");
-
-                LinearLayout layout = new LinearLayout(TaskActivity.this);
-                layout.setPadding(48, 0, 48, 0);
-                layout.setOrientation(LinearLayout.VERTICAL);
-
-                final EditText barBox = new EditText(TaskActivity.this);
-                barBox.setHint("Штрих-код");
-                layout.addView(barBox);
-
-                final EditText nameBox = new EditText(TaskActivity.this);
-                nameBox.setHint("ФИО получателя");
-                layout.addView(nameBox);
-
-                final EditText addressBox = new EditText(TaskActivity.this);
-                addressBox.setHint("Адрес получателя");
-                layout.addView(addressBox);
-
-                builder.setView(layout);
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        m_Text_bar = barBox.getText().toString();
-                        m_Text_name = nameBox.getText().toString();
-                        m_Text_address = addressBox.getText().toString();
-                        if (!m_Text_name.equals("") && !m_Text_bar.equals("") && !m_Text_address.equals("")) {
-                            //barcodesField.setText(barcodesField.getText() + "\n" + m_Text);
-                            barcodes.add(new Barcode(m_Text_name, m_Text_bar, m_Text_address));
-                            barcodesField.getAdapter().notifyDataSetChanged();
-
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_scan:
+                                onClick(bottomNavigationView);
+                                return true;
+                            case R.id.action_input:
+                                Intent intent = new Intent(TaskActivity.this, BarEditActivity.class);
+                                intent.putExtra("task", task);
+                                startActivity(intent);
+                                return true;
+                            default:
+                                return true;
                         }
                     }
                 });
-                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
-            }
-        });
-
         switch (status) {
             case "wait":
                 //toolbar.setBackgroundColor(Color.RED);
@@ -191,50 +161,10 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
             String scanContent = scanningResult.getContents();
             try {
                 if (!scanContent.equals(null)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
-                    builder.setTitle("Накладная");
-
-                    LinearLayout layout = new LinearLayout(TaskActivity.this);
-                    layout.setPadding(48, 0, 48, 0);
-                    layout.setOrientation(LinearLayout.VERTICAL);
-
-                    final EditText barBox = new EditText(TaskActivity.this);
-                    barBox.setHint("Штрих-код");
-                    layout.addView(barBox);
-
-                    final EditText nameBox = new EditText(TaskActivity.this);
-                    nameBox.setHint("ФИО получателя");
-                    layout.addView(nameBox);
-
-                    final EditText addressBox = new EditText(TaskActivity.this);
-                    addressBox.setHint("Адрес");
-                    layout.addView(addressBox);
-
-                    builder.setView(layout);
-
-                    barBox.setText(scanContent);
-
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            m_Text_bar = barBox.getText().toString();
-                            m_Text_name = nameBox.getText().toString();
-                            m_Text_address = addressBox.getText().toString();
-                            if (!m_Text_name.equals("") && !m_Text_bar.equals("") && !m_Text_address.equals("")) {
-                                //barcodesField.setText(barcodesField.getText() + "\n" + m_Text);
-                                barcodes.add(new Barcode(m_Text_name, m_Text_bar, m_Text_address));
-                                barcodesField.getAdapter().notifyDataSetChanged();
-                            }
-                        }
-                    });
-                    builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-
-                    builder.show();
+                    Intent intentEdit = new Intent(TaskActivity.this, BarEditActivity.class);
+                    intent.putExtra("task", task);
+                    intent.putExtra("bar", scanContent);
+                    startActivity(intentEdit);
 
                     }
             } catch (Exception e) {}

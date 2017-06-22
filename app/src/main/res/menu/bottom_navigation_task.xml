@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_scan"
+        android:enabled="true"
+        android:icon="@drawable/ic_bar"
+        android:title="@string/scan_barcode_btn"
+        app:showAsAction="ifRoom" />
+    <!--<item
+        android:id="@+id/action_space"
+        android:enabled="true"
+        android:visible="false"
+        android:title=""
+        app:showAsAction="always" />-->
+    <item
+        android:id="@+id/action_input"
+        android:enabled="true"
+        android:icon="@drawable/ic_add_black"
+        android:title="@string/input_barcode_btn"
+        app:showAsAction="ifRoom" />
+</menu>

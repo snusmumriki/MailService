@@ -46,52 +46,9 @@ public class BarcodeAdapter extends RecyclerView.Adapter<BarcodeAdapter.MyViewHo
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(holder.context);
-                builder.setTitle("Накладная");
-
-                LinearLayout layout = new LinearLayout(holder.context);
-                layout.setPadding(48, 0, 48, 0);
-                layout.setOrientation(LinearLayout.VERTICAL);
-
-                final EditText barBox = new EditText(holder.context);
-                barBox.setHint("Штрих-код");
-                layout.addView(barBox);
-                barBox.setText(bar.getBar());
-
-                final EditText nameBox = new EditText(holder.context);
-                nameBox.setHint("ФИО получателя");
-                layout.addView(nameBox);
-                nameBox.setText(bar.getName());
-
-                final EditText addressBox = new EditText(holder.context);
-                addressBox.setHint("Адрес");
-                layout.addView(addressBox);
-                addressBox.setText(bar.getAddress());
-
-                builder.setView(layout);
-
-                barList.remove(holder.getPosition());
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        m_Text_bar = barBox.getText().toString();
-                        m_Text_name = nameBox.getText().toString();
-                        m_Text_address = addressBox.getText().toString();
-                        if (!m_Text_name.equals("") && !m_Text_bar.equals("") && !m_Text_address.equals("")) {
-                            //barcodesField.setText(barcodesField.getText() + "\n" + m_Text);
-                            barList.add(new Barcode(m_Text_name, m_Text_bar, m_Text_address));
-                        }
-                    }
-                });
-                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
+                Intent intent = new Intent(holder.context, BarEditActivity.class);
+                intent.putExtra("barcode", bar);
+                holder.view.getContext().startActivity(intent);
             }
         });
     }
