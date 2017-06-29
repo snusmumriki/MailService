@@ -7,6 +7,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.lort.mail.App;
 import com.lort.mail.R;
 
 public class RikaService extends Service {
@@ -25,6 +26,7 @@ public class RikaService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.i("Test", "Service: onCreate");
+        rika = ((App) getApplication()).getRika();
         startForeground(1, new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .build());
@@ -32,6 +34,7 @@ public class RikaService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
+        Log.i("Test", "Service: onStartCommand");
         rika.open().subscribe(task -> NotificationManagerCompat.from(RikaService.this)
                 .notify(2, new NotificationCompat.Builder(RikaService.this)
                         .setSmallIcon(R.mipmap.ic_launcher)

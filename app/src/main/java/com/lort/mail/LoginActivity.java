@@ -46,14 +46,15 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         });
 
-        rika = new Rika(this);
+        rika = ((App) getApplication()).getRika();
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(view -> {
             attemptLogin();
             String email = mEmailView.getText().toString();
             String password = mPasswordView.getText().toString();
             rika.login(email, password);
-            startService(new Intent(LoginActivity.this, RikaService.class));
+            startService(new Intent(this, RikaService.class));
+            startActivity(new Intent(this, MainActivity.class));
         });
 
         mLoginFormView = findViewById(R.id.login_form);

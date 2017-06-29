@@ -48,12 +48,9 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, TaskEditActivity.class);
-                startActivity(intent);
-            }
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, TaskEditActivity.class);
+            startActivity(intent);
         });
 
     }
@@ -138,13 +135,10 @@ public class MainActivity extends AppCompatActivity {
             // начинаем показывать прогресс
             mSwipeRefreshLayout.setRefreshing(true);
             rv.getAdapter().notifyDataSetChanged();
-            mSwipeRefreshLayout.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    // говорим о том, что собираемся закончить
-                    //Toast.makeText(MainActivity.this, R.string.refresh_finished, Toast.LENGTH_SHORT).show();
-                }
+            mSwipeRefreshLayout.postDelayed(() -> {
+                mSwipeRefreshLayout.setRefreshing(false);
+                // говорим о том, что собираемся закончить
+                //Toast.makeText(MainActivity.this, R.string.refresh_finished, Toast.LENGTH_SHORT).show();
             }, 3000);
         }
     }
