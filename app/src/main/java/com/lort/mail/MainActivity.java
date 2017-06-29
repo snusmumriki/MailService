@@ -1,44 +1,37 @@
 package com.lort.mail;
 
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
+import com.lort.mail.model.Rika;
+
+import java.util.List;
+
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     static FloatingActionButton fab;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
 
     @Override
@@ -102,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
         SwipeRefreshLayout mSwipeRefreshLayout;
-        ArrayList<Task> taskList;
         RecyclerView rv;
+        Rika rika;
 
         private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -131,15 +124,18 @@ public class MainActivity extends AppCompatActivity {
             // делаем повеселее
             mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
             rv = (RecyclerView) rootView.findViewById(R.id.rv_main);
-            taskList = new ArrayList<Task>();
-            for (int i = 0; i < 6; i++) {
-                taskList.add(new Task());
-            }
             rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-            TaskAdapter adapter = new TaskAdapter(taskList);
-            rv.setAdapter(adapter);
+
             RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
             rv.setItemAnimator(itemAnimator);
+            rika.getTasks().subscribe(new Consumer<List<Task>>() {
+                @Override
+                public void accept(@NonNull List<Task> tasks) throws Exception {
+                    TaskAdapter adapter = new TaskAdapter(tasks);
+                    rv.setAdapter(adapter);
+                }
+            });
+
             return rootView;
         }
 

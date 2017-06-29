@@ -1,16 +1,11 @@
 package com.lort.mail;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -19,26 +14,26 @@ import java.util.List;
  * Created by nikita on 22.06.17.
  */
 
-public class BarcodeAdapter extends RecyclerView.Adapter<BarcodeAdapter.MyViewHolder> {
+public class FormAdapter extends RecyclerView.Adapter<FormAdapter.MyViewHolder> {
 
-    private List<Barcode> barList;
-    Barcode bar;
+    private List<Form> barList;
+    Form bar;
 
     private String m_Text_bar = "";
     private String m_Text_name = "";
     private String m_Text_address = "";
 
-    public BarcodeAdapter(List<Barcode> bars) { barList = bars; }
+    public FormAdapter(List<Form> bars) { barList = bars; }
 
     @Override
-    public BarcodeAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FormAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_barcode, parent, false);
-        return new BarcodeAdapter.MyViewHolder(v);
+        return new FormAdapter.MyViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final BarcodeAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(final FormAdapter.MyViewHolder holder, int position) {
         bar = barList.get(position);
         holder.name.setText(bar.getName());
         holder.address.setText(bar.getAddress());
@@ -46,7 +41,7 @@ public class BarcodeAdapter extends RecyclerView.Adapter<BarcodeAdapter.MyViewHo
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(holder.context, BarEditActivity.class);
+                Intent intent = new Intent(holder.context, FormEditActivity.class);
                 intent.putExtra("barcode", bar);
                 holder.view.getContext().startActivity(intent);
             }

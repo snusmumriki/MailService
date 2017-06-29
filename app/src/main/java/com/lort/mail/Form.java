@@ -7,17 +7,17 @@ import android.os.Parcelable;
  * Created by nikita on 22.06.17.
  */
 
-public class Barcode implements Parcelable {
+public class Form implements Parcelable {
 
     public String name = "ТОО Новелла";
     public String bar = "01213790622";
     public String address = "ул. Пролетариата, д. 27";
     public String contact = "Новиков Илья Владимирович";
 
-    public Barcode() {
+    public Form() {
     }
 
-    public Barcode(String name, String bar, String address, String contact) {
+    public Form(String name, String bar, String address, String contact) {
         this.name = name;
         this.bar = bar;
         this.address = address;
@@ -70,22 +70,22 @@ public class Barcode implements Parcelable {
         dest.writeString(this.contact);
     }
 
-    protected Barcode(Parcel in) {
+    protected Form(Parcel in) {
         this.name = in.readString();
         this.bar = in.readString();
         this.address = in.readString();
         this.contact = in.readString();
     }
 
-    public static final Parcelable.Creator<Barcode> CREATOR = new Parcelable.Creator<Barcode>() {
+    public static final Parcelable.Creator<Form> CREATOR = new Parcelable.Creator<Form>() {
         @Override
-        public Barcode createFromParcel(Parcel source) {
-            return new Barcode(source);
+        public Form createFromParcel(Parcel source) {
+            return new Form(source);
         }
 
         @Override
-        public Barcode[] newArray(int size) {
-            return new Barcode[size];
+        public Form[] newArray(int size) {
+            return new Form[size];
         }
     };
 }

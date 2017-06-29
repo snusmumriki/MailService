@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.lort.mail.BarEditActivity"
+    tools:context="com.lort.mail.FormEditActivity"
     tools:showIn="@layout/activity_bar_edit">
 
     <LinearLayout

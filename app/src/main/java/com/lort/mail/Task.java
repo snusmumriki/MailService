@@ -3,6 +3,9 @@ package com.lort.mail;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.noodle.Id;
+
 import java.util.ArrayList;
 
 /**
@@ -11,13 +14,21 @@ import java.util.ArrayList;
 
 public class Task implements Parcelable {
 
-
+    @Id
+    long id;
+    @Expose
     public String name = "ТОО Тамур";
+    @Expose
     private String address = "ул. Абая, д. 2, ВП-2";
+    @Expose
     private String time = "19:54";
+    @Expose
     private String status = "wait";
-    private ArrayList<Barcode> barcodes;
+    @Expose
+    private ArrayList<Form> barcodes;
+    @Expose
     private String phone = "+7 (909) 777-77-77";
+    @Expose
     private String contact = "Иванов Василий Иванович";
 
     public Task() {
@@ -31,14 +42,14 @@ public class Task implements Parcelable {
         this.status = status;
     }
 
-    public Task(String name, String address, String time, String status, String phone, String contact, ArrayList<Barcode> barcodes) {
+    public Task(String name, String address, String time, String status, String phone, String contact, ArrayList<Form> forms) {
         this.name = name;
         this.address = address;
         this.time = time;
         this.status = status;
     }
 
-        public String getContact() {
+    public String getContact() {
         return contact;
     }
 
@@ -78,11 +89,11 @@ public class Task implements Parcelable {
         this.status = status;
     }
 
-    public ArrayList<Barcode> getBarcodes() {
+    public ArrayList<Form> getBarcodes() {
         return barcodes;
     }
 
-    public void setBarcodes(ArrayList<Barcode> barcodes) {
+    public void setBarcodes(ArrayList<Form> barcodes) {
         this.barcodes = barcodes;
     }
 
@@ -115,8 +126,8 @@ public class Task implements Parcelable {
         this.address = in.readString();
         this.time = in.readString();
         this.status = in.readString();
-        this.barcodes = new ArrayList<Barcode>();
-        in.readList(this.barcodes, Barcode.class.getClassLoader());
+        this.barcodes = new ArrayList<Form>();
+        in.readList(this.barcodes, Form.class.getClassLoader());
         this.phone = in.readString();
         this.contact = in.readString();
     }
