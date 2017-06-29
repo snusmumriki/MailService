@@ -5,14 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 public class FormEditActivity extends AppCompatActivity {
 
     Task task;
     String bar;
-    Form barcode;
+    Form form;
 
     EditText barNum;
     EditText barName;
@@ -26,43 +25,26 @@ public class FormEditActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         barNum = (EditText) findViewById(R.id.bar_num_bar);
         barName = (EditText) findViewById(R.id.bar_name);
         barAddress = (EditText) findViewById(R.id.bar_address);
         barContact = (EditText) findViewById(R.id.bar_contact);
 
-        try {
-            task = (Task) getIntent().getParcelableExtra("task");
-            getSupportActionBar().setTitle(task.getName());
-        } catch (Exception e) {
-            getSupportActionBar().setTitle("Редактировать накладную");
-        }
+        task = getIntent().getParcelableExtra("task");
+        getSupportActionBar().setTitle(task.getName());
+        getSupportActionBar().setTitle("Редактировать накладную");
 
-
-        if (getIntent().getParcelableExtra("barcode") != null) {
-            try {
-                barcode = (Form) getIntent().getParcelableExtra("barcode");
-                barNum.setText(barcode.getBar());
-                barName.setText(barcode.getName());
-                barContact.setText(barcode.getContact());
-                barAddress.setText(barcode.getAddress());
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
-            }
-        } else if (getIntent().getParcelableExtra("bar") != null) {
-            try {
-                bar = getIntent().getStringExtra("bar");
-                barNum.setText(bar);
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
-            }
+        if (getIntent().getParcelableExtra("form") != null) {
+            form = getIntent().getParcelableExtra("form");
+            barNum.setText(form.getBar());
+            barName.setText(form.getName());
+            barContact.setText(form.getContact());
+            barAddress.setText(form.getAddress());
+        } else if (getIntent().getParcelableExtra("form") != null) {
+            bar = getIntent().getStringExtra("form");
+            barNum.setText(bar);
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

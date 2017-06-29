@@ -24,7 +24,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.lort.mail.ui.camera.GraphicOverlay;
 
 /**
- * Graphic instance for rendering barcode position, size, and ID within an associated graphic
+ * Graphic instance for rendering form position, size, and ID within an associated graphic
  * overlay view.
  */
 public class BarcodeGraphic extends GraphicOverlay.Graphic {
@@ -61,7 +61,7 @@ public class BarcodeGraphic extends GraphicOverlay.Graphic {
     }
 
     /**
-     * Updates the barcode instance from the detection of the most recent frame.  Invalidates the
+     * Updates the form instance from the detection of the most recent frame.  Invalidates the
      * relevant portions of the overlay to trigger a redraw.
      */
     void updateItem(Barcode barcode) {
@@ -70,7 +70,7 @@ public class BarcodeGraphic extends GraphicOverlay.Graphic {
     }
 
     /**
-     * Draws the barcode annotations for position, size, and raw value on the supplied canvas.
+     * Draws the form annotations for position, size, and raw value on the supplied canvas.
      */
     @Override
     public void draw(Canvas canvas) {
@@ -79,7 +79,7 @@ public class BarcodeGraphic extends GraphicOverlay.Graphic {
             return;
         }
 
-        // Draws the bounding box around the barcode.
+        // Draws the bounding box around the form.
         RectF rect = new RectF(barcode.getBoundingBox());
         rect.left = translateX(rect.left);
         rect.top = translateY(rect.top);
@@ -87,7 +87,7 @@ public class BarcodeGraphic extends GraphicOverlay.Graphic {
         rect.bottom = translateY(rect.bottom);
         canvas.drawRect(rect, mRectPaint);
 
-        // Draws a label at the bottom of the barcode indicate the barcode value that was detected.
+        // Draws a label at the bottom of the form indicate the form value that was detected.
         canvas.drawText(barcode.rawValue, rect.left, rect.bottom, mTextPaint);
     }
 }

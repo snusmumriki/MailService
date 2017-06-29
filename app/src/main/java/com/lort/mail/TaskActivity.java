@@ -1,9 +1,7 @@
 package com.lort.mail;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -15,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -23,7 +20,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 
 import java.util.ArrayList;
 
-public class TaskActivity extends AppCompatActivity implements View.OnClickListener {
+public class TaskActivity extends AppCompatActivity {
 
     private static final int RC_BARCODE_CAPTURE = 0;
     Task task;
@@ -31,12 +28,12 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
     AlertDialog levelDialog;
 
     private EditText addressField;
-    private RecyclerView barcodesField;
+    private RecyclerView formsField;
     private EditText timeField;
     private EditText phoneField;
     private EditText contactField;
 
-    ArrayList<Form> barcodes;
+    ArrayList<Form> forms;
 
 
     @Override
@@ -47,30 +44,30 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
 
 
-        task = (Task) getIntent().getParcelableExtra("task");
+        task = getIntent().getParcelableExtra("task");
 
         String name = task.getName();
         final String address = task.getAddress();
         String time = task.getTime();
         String status = task.getStatus();
-        barcodes = task.getBarcodes();
+        forms = task.getBarcodes();
         String phone = task.getPhone();
         String contact = task.getContact();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        barcodesField = (RecyclerView) findViewById(R.id.rv_bar);
+        formsField = (RecyclerView) findViewById(R.id.rv_bar);
         addressField = (EditText) findViewById(R.id.task_address);
         timeField = (EditText) findViewById(R.id.task_time);
         phoneField = (EditText) findViewById(R.id.task_phone);
         contactField = (EditText) findViewById(R.id.task_contact);
 
-        barcodesField.setLayoutManager(new LinearLayoutManager(this));
-        barcodes.add(new Form());
-        FormAdapter adapter = new FormAdapter(barcodes);
-        barcodesField.setAdapter(adapter);
+        formsField.setLayoutManager(new LinearLayoutManager(this));
+        forms.add(new Form());
+        FormAdapter adapter = new FormAdapter(forms);
+        formsField.setAdapter(adapter);
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        barcodesField.setItemAnimator(itemAnimator);
+        formsField.setItemAnimator(itemAnimator);
 
         getSupportActionBar().setTitle(name);
         addressField.setText(address);
@@ -81,24 +78,20 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         final BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_scan:
-                                onClick(bottomNavigationView);
-                                return true;
-                            case R.id.action_input:
-                                Intent intent = new Intent(TaskActivity.this, BarcodeCaptureActivity.class);
-                                intent.putExtra("task", task);
-                                startActivity(intent);
-                                return true;
-                            default:
-                                return true;
-                        }
-                    }
-                });
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_scan:
+                    startActivityForResult(
+                            new Intent(this, BarcodeCaptureActivity.class), RC_BARCODE_CAPTURE);
+                    return true;
+                case R.id.action_input:
+                    startActivity(new Intent(TaskActivity.this, FormEditActivity.class)
+                            .putExtra("title", task.getName()));
+                    return true;
+                default:
+                    return true;
+            }
+        });
         switch (status) {
             case "wait":
                 //toolbar.setBackgroundColor(Color.RED);
@@ -115,34 +108,27 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabTask);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Strings to Show In Dialog with Radio Buttons
-                final CharSequence[] items = {"Ожидает выполнения", "В процессе выполнения", "Выполнен"};
+        fab.setOnClickListener(view -> {
+            String[] items = new String[]{"Ожидает выполнения", "В процессе выполнения", "Выполнен"};
 
-                // Creating and Building the Dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
-                builder.setTitle("Выберите новый статус заявки");
-                builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch (item) {
-                            case 0:
-                                task.setStatus("wait");
-                                break;
-                            case 1:
-                                task.setStatus("progress");
-                                break;
-                            case 2:
-                                task.setStatus("done");
-                                break;
-                        }
-                        levelDialog.dismiss();
-                    }
-                });
-                levelDialog = builder.create();
-                levelDialog.show();
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
+            builder.setTitle("Выберите новый статус заявки");
+            builder.setSingleChoiceItems(items, -1, (dialog, item) -> {
+                switch (item) {
+                    case 0:
+                        task.setStatus("wait");
+                        break;
+                    case 1:
+                        task.setStatus("progress");
+                        break;
+                    case 2:
+                        task.setStatus("done");
+                        break;
+                }
+                levelDialog.dismiss();
+            });
+            levelDialog = builder.create();
+            levelDialog.show();
         });
     }
 
@@ -153,11 +139,11 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BARCODE_OBJECT);
                     Intent intent = new Intent(TaskActivity.this, FormEditActivity.class);
                     intent.putExtra("task", task);
-                    intent.putExtra("bar", barcode.displayValue);
+                    intent.putExtra("form", barcode.displayValue);
                     startActivity(intent);
                     Log.d("TAG", "Barcode read: " + barcode.displayValue);
                 } else {
-                    Log.d("TAG", "No barcode captured, intent data is null");
+                    Log.d("TAG", "No form captured, intent data is null");
                 }
             } else {
 
@@ -165,20 +151,6 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-
-    @Override
-    public void onClick(View v) {
-       /* if (v.getId() == R.id.read_barcode) {
-            // launch barcode activity.
-            Intent intent = new Intent(this, BarcodeCaptureActivity.class);
-            //intent.putExtra(BarcodeCaptureActivity.AutoFocus, autoFocus.isChecked());
-           // intent.putExtra(BarcodeCaptureActivity.UseFlash, useFlash.isChecked());
-
-            startActivityForResult(intent, RC_BARCODE_CAPTURE);
-        }*/
-
     }
 
     @Override
@@ -192,7 +164,7 @@ public class TaskActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
-            Intent intent = new Intent(TaskActivity.this, EditActivity.class);
+            Intent intent = new Intent(TaskActivity.this, TaskEditActivity.class);
             intent.putExtra("task", task);
             startActivity(intent);
             return true;

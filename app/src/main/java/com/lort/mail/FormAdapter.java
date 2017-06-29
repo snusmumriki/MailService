@@ -17,13 +17,10 @@ import java.util.List;
 public class FormAdapter extends RecyclerView.Adapter<FormAdapter.MyViewHolder> {
 
     private List<Form> barList;
-    Form bar;
 
-    private String m_Text_bar = "";
-    private String m_Text_name = "";
-    private String m_Text_address = "";
-
-    public FormAdapter(List<Form> bars) { barList = bars; }
+    public FormAdapter(List<Form> bars) {
+        barList = bars;
+    }
 
     @Override
     public FormAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,22 +31,21 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(final FormAdapter.MyViewHolder holder, int position) {
-        bar = barList.get(position);
-        holder.name.setText(bar.getName());
-        holder.address.setText(bar.getAddress());
-        holder.bar.setText(bar.getBar());
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(holder.context, FormEditActivity.class);
-                intent.putExtra("barcode", bar);
-                holder.view.getContext().startActivity(intent);
-            }
+        Form form = barList.get(position);
+        holder.name.setText(form.getName());
+        holder.address.setText(form.getAddress());
+        holder.bar.setText(form.getBar());
+        holder.view.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.context, FormEditActivity.class);
+            intent.putExtra("form", form);
+            holder.view.getContext().startActivity(intent);
         });
     }
 
     @Override
-    public int getItemCount() { return barList.size(); }
+    public int getItemCount() {
+        return barList.size();
+    }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public View view;
@@ -58,7 +54,7 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.MyViewHolder> 
         public TextView bar;
         public Context context;
 
-        public  MyViewHolder(View itemView) {
+        public MyViewHolder(View itemView) {
             super(itemView);
             view = itemView;
             name = (TextView) itemView.findViewById(R.id.name_card_bar);

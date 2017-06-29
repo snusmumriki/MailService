@@ -42,7 +42,7 @@
                 android:value="com.lort.mail.MainActivity" />
         </activity>
         <activity
-            android:name=".EditActivity"
+            android:name=".TaskEditActivity"
             android:label="@string/title_activity_edit"
             android:theme="@style/AppTheme.Accept" />
         <activity

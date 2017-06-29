@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.lort.mail.Form;
 import com.lort.mail.Task;
 import com.noodle.Noodle;
 
@@ -12,8 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -74,22 +73,14 @@ public class Rika {
     }
 
     public Flowable<Task> open() {
-        return echo.getProcessor().map(new Function<String, Task>() {
-            @Override
-            public Task apply(@NonNull String s) throws Exception {
-                return gson.fromJson(s, Task.class);
-            }
-        }).flatMap(new Function<Task, Flowable<Task>>() {
-            @Override
-            public Flowable<Task> apply(@NonNull Task task) throws Exception {
-                return noodle.collectionOf(Task.class).put(task)
-                        .toRxObservable().toFlowable(BackpressureStrategy.BUFFER);
-            }
-        });
+        return echo.getProcessor().map(s -> gson.fromJson(s, Task.class))
+                .flatMap(task -> noodle.collectionOf(Task.class).put(task)
+                        .toRxObservable().toFlowable(BackpressureStrategy.BUFFER))
+                .subscribeOn(Schedulers.io());
     }
 
-    public boolean send(Task task) {
-        return webSocket.send(gson.toJson(task));
+    public boolean send(Form form) {
+        return webSocket.send(gson.toJson(form));
     }
 
     public Flowable<List<Task>> getTasks() {
@@ -98,7 +89,7 @@ public class Rika {
                 .toFlowable(BackpressureStrategy.BUFFER);
     }
 
-    static class WebSocketEcho extends WebSocketListener {
+    private static class WebSocketEcho extends WebSocketListener {
         private PublishProcessor<String> processor = PublishProcessor.create();
 
         public PublishProcessor<String> getProcessor() {

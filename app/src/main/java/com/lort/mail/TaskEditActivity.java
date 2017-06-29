@@ -5,14 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 
-public class EditActivity extends AppCompatActivity {
-
-    Task task;
-
+public class TaskEditActivity extends AppCompatActivity {
     private EditText addressField;
     private EditText barcodesField;
     private EditText timeField;
@@ -26,12 +22,7 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -41,25 +32,13 @@ public class EditActivity extends AppCompatActivity {
         contactField = (EditText) findViewById(R.id.edit_contact);
         nameField = (EditText) findViewById(R.id.edit_name);
 
-        try {
-            task = (Task) getIntent().getParcelableExtra("task");
-
-            String name = task.getName();
-            String address = task.getAddress();
-            String time = task.getTime();
-            String status = task.getStatus();
-            String phone = task.getPhone();
-            String contact = task.getContact();
-            getSupportActionBar().setTitle(name);
-
-            addressField.setText(address);
-            timeField.setText(time);
-            phoneField.setText(phone);
-            contactField.setText(contact);
-
-            nameField.setText(name);
-        } catch (Exception ignored) { }
-
+        Task task = getIntent().getParcelableExtra("task");
+        getSupportActionBar().setTitle(task.getName());
+        nameField.setText(task.getName());
+        addressField.setText(task.getAddress());
+        timeField.setText(task.getTime());
+        phoneField.setText(task.getPhone());
+        contactField.setText(task.getContact());
     }
 
     @Override

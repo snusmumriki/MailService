@@ -6,10 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 
 import java.util.List;
 
@@ -18,7 +16,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
     private List<Task> taskList;
     Task task;
 
-    public TaskAdapter(List<Task> tasks) { taskList = tasks; }
+    public TaskAdapter(List<Task> tasks) {
+        taskList = tasks;
+    }
 
     @Override
     public TaskAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -44,18 +44,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
                 holder.status.setBackgroundColor(Color.GREEN);
                 break;
         }
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(holder.view.getContext(), TaskActivity.class);
-                intent.putExtra("task", task);
-                holder.view.getContext().startActivity(intent);
-            }
+        holder.view.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.view.getContext(), TaskActivity.class);
+            intent.putExtra("task", task);
+            holder.view.getContext().startActivity(intent);
         });
     }
 
     @Override
-    public int getItemCount() { return taskList.size(); }
+    public int getItemCount() {
+        return taskList.size();
+    }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public View view;
@@ -64,7 +63,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
         public LinearLayout status;
         public TextView time;
 
-        public  MyViewHolder(View itemView) {
+        public MyViewHolder(View itemView) {
             super(itemView);
             view = itemView;
             name = (TextView) itemView.findViewById(R.id.name_card);
