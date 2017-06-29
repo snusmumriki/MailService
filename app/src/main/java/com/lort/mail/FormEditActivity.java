@@ -1,5 +1,6 @@
 package com.lort.mail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -7,16 +8,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.google.android.gms.common.api.CommonStatusCodes;
+
 public class FormEditActivity extends AppCompatActivity {
-
-    Task task;
-    String bar;
-    Form form;
-
     EditText barNum;
     EditText barName;
     EditText barAddress;
     EditText barContact;
+
+    Form form;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,29 +25,36 @@ public class FormEditActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        toolbar.setNavigationOnClickListener(v -> finish());
-
         barNum = (EditText) findViewById(R.id.bar_num_bar);
         barName = (EditText) findViewById(R.id.bar_name);
         barAddress = (EditText) findViewById(R.id.bar_address);
         barContact = (EditText) findViewById(R.id.bar_contact);
 
-        task = getIntent().getParcelableExtra("task");
-        getSupportActionBar().setTitle(task.getName());
-        getSupportActionBar().setTitle("Редактировать накладную");
+        String title = getIntent().getStringExtra("title");
+        if (title == null) title = "Редактировать накладную";
+        getSupportActionBar().setTitle(title);
 
-        if (getIntent().getParcelableExtra("form") != null) {
-            form = getIntent().getParcelableExtra("form");
+        toolbar.setNavigationOnClickListener(v -> {
+            form.setBar(barNum.getText().toString());
+            form.setName(barNum.getText().toString());
+            form.setContact(barNum.getText().toString());
+            form.setAddress(barNum.getText().toString());
+            setResult(CommonStatusCodes.SUCCESS, new Intent().putExtra("form", form));
+            finish();
+        });
+
+        if ((form = getIntent().getParcelableExtra("form")) != null) {
             barNum.setText(form.getBar());
             barName.setText(form.getName());
             barContact.setText(form.getContact());
             barAddress.setText(form.getAddress());
-        } else if (getIntent().getParcelableExtra("form") != null) {
-            bar = getIntent().getStringExtra("form");
-            barNum.setText(bar);
+        } else {
+            form = new Form();
+            form.setBar(getIntent().getStringExtra("barcode"));
+            barNum.setText(form.getBar());
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -30,7 +30,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 
 public class Rika {
-    public static final String BASE_URL = "fgbsfgbsb";
+    public static final String BASE_URL = "https://rikaserver.herokuapp.com/";
     private Gson gson;
     private Noodle noodle;
     private RikaApi rikaApi;
@@ -50,7 +50,7 @@ public class Rika {
                 .build();
 
         Request request = new Request.Builder()
-                .url(BASE_URL + "url")
+                .url(BASE_URL + "ws")
                 .build();
 
 
@@ -67,9 +67,13 @@ public class Rika {
         rikaApi = retrofit.create(RikaApi.class);
     }
 
-    public Flowable<String> login(String user, String password) {
+   /* public Flowable<String> login(String user, String password) {
         return rikaApi.login(user, password)
                 .subscribeOn(Schedulers.io());
+    }*/
+
+    public Flowable<String> login(String user, String password) {
+        return null;
     }
 
     public Flowable<Task> open() {
@@ -83,10 +87,16 @@ public class Rika {
         return webSocket.send(gson.toJson(form));
     }
 
-    public Flowable<List<Task>> getTasks() {
+   /* public Flowable<List<Task>> getTasks() {
         return noodle.collectionOf(Task.class)
                 .all().toRxObservable()
                 .toFlowable(BackpressureStrategy.BUFFER);
+    }*/
+
+    public Flowable<List<Task>> getTasks() {
+        return Flowable.just(new Task())
+                .repeat(10).toList()
+                .toFlowable();
     }
 
     private static class WebSocketEcho extends WebSocketListener {

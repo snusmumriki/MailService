@@ -22,11 +22,6 @@ import android.view.ViewGroup;
 
 import com.lort.mail.model.Rika;
 
-import java.util.List;
-
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
-
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -128,12 +123,9 @@ public class MainActivity extends AppCompatActivity {
 
             RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
             rv.setItemAnimator(itemAnimator);
-            rika.getTasks().subscribe(new Consumer<List<Task>>() {
-                @Override
-                public void accept(@NonNull List<Task> tasks) throws Exception {
-                    TaskAdapter adapter = new TaskAdapter(tasks);
-                    rv.setAdapter(adapter);
-                }
+            rika.getTasks().subscribe(tasks -> {
+                TaskAdapter adapter = new TaskAdapter(tasks);
+                rv.setAdapter(adapter);
             });
 
             return rootView;

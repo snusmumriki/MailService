@@ -8,15 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.lort.mail.model.Rika;
 import com.lort.mail.model.RikaService;
@@ -41,27 +38,22 @@ public class LoginActivity extends AppCompatActivity {
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         logo = (ImageView) findViewById(R.id.logo);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+        mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
+            if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                attemptLogin();
+                return true;
             }
+            return false;
         });
 
+        rika = new Rika(this);
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-                String email = mEmailView.getText().toString();
-                String password = mPasswordView.getText().toString();
-                rika.login(email, password);
-                startService(new Intent(LoginActivity.this, RikaService.class));
-            }
+        mEmailSignInButton.setOnClickListener(view -> {
+            attemptLogin();
+            String email = mEmailView.getText().toString();
+            String password = mPasswordView.getText().toString();
+            rika.login(email, password);
+            startService(new Intent(LoginActivity.this, RikaService.class));
         });
 
         mLoginFormView = findViewById(R.id.login_form);

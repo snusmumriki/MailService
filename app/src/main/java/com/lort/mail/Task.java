@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.noodle.Id;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nikita on 19.06.17.
@@ -25,7 +26,7 @@ public class Task implements Parcelable {
     @Expose
     private String status = "wait";
     @Expose
-    private ArrayList<Form> barcodes;
+    private List<Form> forms;
     @Expose
     private String phone = "+7 (909) 777-77-77";
     @Expose
@@ -89,12 +90,12 @@ public class Task implements Parcelable {
         this.status = status;
     }
 
-    public ArrayList<Form> getBarcodes() {
-        return barcodes;
+    public List<Form> getForms() {
+        return forms;
     }
 
-    public void setBarcodes(ArrayList<Form> barcodes) {
-        this.barcodes = barcodes;
+    public void setForms(ArrayList<Form> forms) {
+        this.forms = forms;
     }
 
     public String getPhone() {
@@ -116,7 +117,7 @@ public class Task implements Parcelable {
         dest.writeString(this.address);
         dest.writeString(this.time);
         dest.writeString(this.status);
-        dest.writeList(this.barcodes);
+        dest.writeList(this.forms);
         dest.writeString(this.phone);
         dest.writeString(this.contact);
     }
@@ -126,8 +127,8 @@ public class Task implements Parcelable {
         this.address = in.readString();
         this.time = in.readString();
         this.status = in.readString();
-        this.barcodes = new ArrayList<Form>();
-        in.readList(this.barcodes, Form.class.getClassLoader());
+        this.forms = new ArrayList<>();
+        in.readList(this.forms, Form.class.getClassLoader());
         this.phone = in.readString();
         this.contact = in.readString();
     }
