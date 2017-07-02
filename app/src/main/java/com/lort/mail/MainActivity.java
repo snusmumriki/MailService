@@ -22,6 +22,9 @@ import android.view.ViewGroup;
 
 import com.lort.mail.model.Rika;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -51,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, TaskEditActivity.class);
             startActivity(intent);
         });
-
-        Rika rika = ((App) getApplication()).getRika();
     }
 
 
@@ -141,6 +142,10 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(MainActivity.this, R.string.refresh_finished, Toast.LENGTH_SHORT).show();
             }, 3000);
         }
+
+        public void setRika(Rika rika) {
+            this.rika = rika;
+        }
     }
 
     /**
@@ -148,41 +153,36 @@ public class MainActivity extends AppCompatActivity {
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        List<Fragment> fragments;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+
+            Fragment fragment = new CollectFragment();
+            Bundle args = new Bundle();
+            args.putInt("Сбор", 1);
+            fragment.setArguments(args);
+            ((CollectFragment) fragment).setRika(((App) getApplication()).getRika());
+
+            Fragment fragment1 = new Fragment();
+            Bundle args1 = new Bundle();
+            args1.putInt("Доставка", 3);
+            fragment1.setArguments(args1);
+
+            Fragment fragment2 = new ContractListFragment();
+            Bundle args2 = new Bundle();
+            args2.putInt("Контрольный лист", 5);
+            fragment2.setArguments(args2);
+
+            fragments = Arrays.asList(fragment, fragment1, fragment2);
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a CollectFragment (defined as a static inner class below).
-
-            if (position == 0) {
-                Bundle args;
-                Fragment fragment = new CollectFragment();
-                args = new Bundle();
-                args.putInt("Сбор", position + 1);
-                fragment.setArguments(args);
-                return fragment;
-            } else if (position == 1) {
-                Bundle args;
-                Fragment fragment2 = new Fragment();
-                args = new Bundle();
-                args.putInt("Доставка", position + 2);
-                fragment2.setArguments(args);
-                return fragment2;
-            } else if (position == 2) {
-                Bundle args;
-                Fragment fragment3 = new ContractListFragment();
-                args = new Bundle();
-                args.putInt("Контрольный лист", position + 3);
-                fragment3.setArguments(args);
-                return fragment3;
-            } else {
-                return null;
-            }
             //return CollectFragment.newInstance(position + 1);
+            return fragments.get(position);
         }
 
         @Override
