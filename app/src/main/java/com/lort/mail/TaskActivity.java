@@ -15,17 +15,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TaskActivity extends AppCompatActivity {
 
-    private static final int BARCODE_CAPTURE = 0;
-    private static final int FORM_EDIT = 1;
+    public static final int BARCODE_CAPTURE = 1;
+    public static final int FORM_ADD = 2;
+    public static final int FORM_EDIT = 3;
+    public static final int TASK_EDIT = 4;
     Task task;
-
     AlertDialog levelDialog;
 
     private EditText addressField;
@@ -51,11 +52,11 @@ public class TaskActivity extends AppCompatActivity {
         task = getIntent().getParcelableExtra("task");
         List<Form> forms = task.getForms();
         formsField.setLayoutManager(new LinearLayoutManager(this));
-        forms.add(new Form());
-        FormAdapter adapter = new FormAdapter(forms);
-        formsField.setAdapter(adapter);
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         formsField.setItemAnimator(itemAnimator);
+        if (forms.size() != 0) {
+            formsField.setAdapter(new FormAdapter(forms));
+        }
 
         getSupportActionBar().setTitle(task.getName());
         addressField.setText(task.getAddress());
@@ -73,8 +74,8 @@ public class TaskActivity extends AppCompatActivity {
                             new Intent(this, BarcodeCaptureActivity.class), BARCODE_CAPTURE);
                     return true;
                 case R.id.action_input:
-                    startActivityForResult(new Intent(TaskActivity.this, FormEditActivity.class)
-                            .putExtra("title", task.getName()), FORM_EDIT);
+                    startActivityForResult(new Intent(this, FormEditActivity.class)
+                            .putExtra("title", task.getName()), FORM_ADD);
                     return true;
                 default:
                     return true;
@@ -99,43 +100,47 @@ public class TaskActivity extends AppCompatActivity {
         fab.setOnClickListener(view -> {
             String[] items = new String[]{"Ожидает выполнения", "В процессе выполнения", "Выполнен"};
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(TaskActivity.this);
-            builder.setTitle("Выберите новый статус заявки");
-            builder.setSingleChoiceItems(items, -1, (dialog, item) -> {
-                switch (item) {
-                    case 0:
-                        task.setStatus("wait");
-                        break;
-                    case 1:
-                        task.setStatus("progress");
-                        break;
-                    case 2:
-                        task.setStatus("done");
-                        break;
-                }
-                levelDialog.dismiss();
-            });
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setTitle("Выберите новый статус заявки")
+                    .setSingleChoiceItems(items, -1, (dialog, item) -> {
+                        task.setStatus(Arrays.asList("wait", "progress", "done").get(item));
+                        levelDialog.dismiss();
+                    });
             levelDialog = builder.create();
             levelDialog.show();
         });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BARCODE_CAPTURE) {
-            if (resultCode == CommonStatusCodes.SUCCESS) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case BARCODE_CAPTURE:
+                Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BARCODE_OBJECT);
+                Log.i("tag", "Barcode read: " + barcode.displayValue);
+                startActivityForResult(new Intent(this, FormEditActivity.class)
+                        .putExtra("title", task.getName())
+                        .putExtra("barcode", barcode.displayValue), FORM_ADD);
+                break;
+            case FORM_ADD:
                 if (data != null) {
-                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BARCODE_OBJECT);
-                    startActivity(new Intent(TaskActivity.this, FormEditActivity.class)
-                            .putExtra("title", task.getName()).putExtra("barcode", barcode.displayValue));
-                    Log.d("TAG", "Barcode read: " + barcode.displayValue);
-                } else {
-                    Log.d("TAG", "No form captured, intent data is null");
-                }
-            } else {
-
-            }
-        } else {
-
+                    task.getForms().add(data.getParcelableExtra("form"));
+                    formsField.setAdapter(new FormAdapter(task.getForms()));
+                } else Log.i("tag", "*****************");
+                break;
+            case FORM_EDIT:
+                if (data != null) {
+                    task.getForms().add(data.getParcelableExtra("form"));
+                    formsField.setAdapter(new FormAdapter(task.getForms()));
+                } else Log.i("tag", "*****************");
+                break;
+            case TASK_EDIT:
+                task = data.getParcelableExtra("task");
+                getSupportActionBar().setTitle(task.getName());
+                addressField.setText(task.getAddress());
+                timeField.setText(task.getTime());
+                phoneField.setText(task.getPhone());
+                contactField.setText(task.getContact());
+                break;
         }
     }
 
@@ -150,9 +155,8 @@ public class TaskActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
-            Intent intent = new Intent(TaskActivity.this, TaskEditActivity.class);
-            intent.putExtra("task", task);
-            startActivity(intent);
+            startActivityForResult(
+                    new Intent(this, TaskEditActivity.class).putExtra("task", task), TASK_EDIT);
             return true;
         }
 

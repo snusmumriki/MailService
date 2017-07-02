@@ -1,6 +1,6 @@
 package com.lort.mail;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,10 +16,23 @@ import java.util.List;
 
 public class FormAdapter extends RecyclerView.Adapter<FormAdapter.MyViewHolder> {
 
-    private List<Form> barList;
+    private List<Form> forms;
+    private int lastIndex;
 
-    public FormAdapter(List<Form> bars) {
-        barList = bars;
+    public FormAdapter(List<Form> forms) {
+        this.forms = forms;
+    }
+
+    public List<Form> getForms() {
+        return forms;
+    }
+
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
+    }
+
+    public int getLastIndex() {
+        return lastIndex;
     }
 
     @Override
@@ -31,20 +44,19 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(final FormAdapter.MyViewHolder holder, int position) {
-        Form form = barList.get(position);
+        Activity activity = (Activity) holder.view.getContext();
+        Form form = forms.get(position);
         holder.name.setText(form.getName());
         holder.address.setText(form.getAddress());
         holder.bar.setText(form.getBar());
-        holder.view.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.context, FormEditActivity.class);
-            intent.putExtra("form", form);
-            holder.view.getContext().startActivity(intent);
-        });
+        holder.view.setOnClickListener(v -> activity.startActivityForResult(
+                new Intent(activity, FormEditActivity.class).putExtra("form", form),
+                TaskActivity.FORM_EDIT));
     }
 
     @Override
     public int getItemCount() {
-        return barList.size();
+        return forms.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -52,7 +64,6 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.MyViewHolder> 
         public TextView name;
         public TextView address;
         public TextView bar;
-        public Context context;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -60,9 +71,7 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.MyViewHolder> 
             name = (TextView) itemView.findViewById(R.id.name_card_bar);
             address = (TextView) itemView.findViewById(R.id.address_card_bar);
             bar = (TextView) itemView.findViewById(R.id.bar_card_bar);
-            context = itemView.getContext();
         }
     }
-
 }
 

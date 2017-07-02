@@ -43,7 +43,7 @@ public class Task implements Parcelable {
         this.status = status;
     }
 
-    public Task(String name, String address, String time, String status, String phone, String contact, ArrayList<Form> forms) {
+    public Task(String name, String address, String time, String status, String phone, String contact, List<Form> forms) {
         this.name = name;
         this.address = address;
         this.time = time;
@@ -94,7 +94,7 @@ public class Task implements Parcelable {
         return forms;
     }
 
-    public void setForms(ArrayList<Form> forms) {
+    public void setForms(List<Form> forms) {
         this.forms = forms;
     }
 

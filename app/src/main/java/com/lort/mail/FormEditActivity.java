@@ -8,8 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
-import com.google.android.gms.common.api.CommonStatusCodes;
-
 public class FormEditActivity extends AppCompatActivity {
     EditText barNum;
     EditText barName;
@@ -39,7 +37,7 @@ public class FormEditActivity extends AppCompatActivity {
             form.setName(barNum.getText().toString());
             form.setContact(barNum.getText().toString());
             form.setAddress(barNum.getText().toString());
-            setResult(CommonStatusCodes.SUCCESS, new Intent().putExtra("form", form));
+            setResult(RESULT_OK, new Intent().putExtra("form", form));
             finish();
         });
 
@@ -53,6 +51,9 @@ public class FormEditActivity extends AppCompatActivity {
             form.setBar(getIntent().getStringExtra("barcode"));
             barNum.setText(form.getBar());
         }
+
+        setResult(RESULT_OK, new Intent().putExtra("form", form));
+        finish();
     }
 
 

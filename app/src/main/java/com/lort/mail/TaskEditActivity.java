@@ -1,5 +1,6 @@
 package com.lort.mail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,8 @@ public class TaskEditActivity extends AppCompatActivity {
     private EditText phoneField;
     private EditText contactField;
     private EditText nameField;
+
+    private Task task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +35,7 @@ public class TaskEditActivity extends AppCompatActivity {
         contactField = (EditText) findViewById(R.id.edit_contact);
         nameField = (EditText) findViewById(R.id.edit_name);
 
-        Task task = getIntent().getParcelableExtra("task");
+        task = getIntent().getParcelableExtra("task");
         getSupportActionBar().setTitle(task.getName());
         nameField.setText(task.getName());
         addressField.setText(task.getAddress());
@@ -52,6 +55,12 @@ public class TaskEditActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            task.setName(nameField.getText().toString());
+            task.setAddress(addressField.getText().toString());
+            task.setTime(timeField.getText().toString());
+            task.setPhone(phoneField.getText().toString());
+            task.setContact(contactField.getText().toString());
+            setResult(RESULT_OK, new Intent().putExtra("task", task));
             finish();
             return true;
         }

@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -36,7 +35,7 @@ public class BarcodeCaptureActivity extends AppCompatActivity {
 
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
-    public static final String BARCODE_OBJECT = "Form";
+    public static final String BARCODE_OBJECT = "form";
 
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
@@ -63,7 +62,7 @@ public class BarcodeCaptureActivity extends AppCompatActivity {
     }
 
     private void requestCameraPermission() {
-        Log.w(TAG, "Camera permission is not granted. Requesting permission");
+        Log.i(TAG, "Camera permission is not granted. Requesting permission");
 
         final String[] permissions = new String[]{Manifest.permission.CAMERA};
 
@@ -86,20 +85,21 @@ public class BarcodeCaptureActivity extends AppCompatActivity {
     private void createCameraSource() {
         Context context = getApplicationContext();
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context)
-                .setBarcodeFormats(Barcode.EAN_13)
+                //.setBarcodeFormats(Barcode.EAN_13)
+                .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
         barcodeDetector.setProcessor(
                 new MultiProcessor.Builder<>(new BarcodeTrackerFactory(mGraphicOverlay))
                         .build());
 
         if (!barcodeDetector.isOperational()) {
-            Log.w(TAG, "Detector dependencies are not yet available.");
+            Log.i(TAG, "Detector dependencies are not yet available.");
             IntentFilter filter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
             boolean hasLowStorage = registerReceiver(null, filter) != null;
 
             if (hasLowStorage) {
                 Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show();
-                Log.w(TAG, getString(R.string.low_storage_error));
+                Log.i(TAG, getString(R.string.low_storage_error));
             }
         }
 
@@ -204,7 +204,7 @@ public class BarcodeCaptureActivity extends AppCompatActivity {
         }
 
         if (best != null) {
-            setResult(CommonStatusCodes.SUCCESS, new Intent().putExtra(BARCODE_OBJECT, best));
+            setResult(RESULT_OK, new Intent().putExtra(BARCODE_OBJECT, best));
             finish();
             return true;
         }
