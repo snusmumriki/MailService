@@ -31,15 +31,7 @@ public class FormEditActivity extends AppCompatActivity {
         String title = getIntent().getStringExtra("title");
         if (title == null) title = "Редактировать накладную";
         getSupportActionBar().setTitle(title);
-
-        toolbar.setNavigationOnClickListener(v -> {
-            form.setBar(barNum.getText().toString());
-            form.setName(barNum.getText().toString());
-            form.setContact(barNum.getText().toString());
-            form.setAddress(barNum.getText().toString());
-            setResult(RESULT_OK, new Intent().putExtra("form", form));
-            finish();
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         if ((form = getIntent().getParcelableExtra("form")) != null) {
             barNum.setText(form.getBar());
@@ -51,9 +43,6 @@ public class FormEditActivity extends AppCompatActivity {
             form.setBar(getIntent().getStringExtra("barcode"));
             barNum.setText(form.getBar());
         }
-
-        setResult(RESULT_OK, new Intent().putExtra("form", form));
-        finish();
     }
 
 
@@ -68,6 +57,11 @@ public class FormEditActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            form.setBar(barNum.getText().toString());
+            form.setName(barName.getText().toString());
+            form.setContact(barContact.getText().toString());
+            form.setAddress(barAddress.getText().toString());
+            setResult(RESULT_OK, new Intent().putExtra("form", form));
             finish();
             return true;
         }

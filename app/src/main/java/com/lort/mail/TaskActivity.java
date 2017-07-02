@@ -122,16 +122,12 @@ public class TaskActivity extends AppCompatActivity {
                         .putExtra("barcode", barcode.displayValue), FORM_ADD);
                 break;
             case FORM_ADD:
-                if (data != null) {
-                    task.getForms().add(data.getParcelableExtra("form"));
-                    formsField.setAdapter(new FormAdapter(task.getForms()));
-                } else Log.i("tag", "*****************");
+                task.getForms().add(data.getParcelableExtra("form"));
+                formsField.setAdapter(new FormAdapter(task.getForms()));
                 break;
             case FORM_EDIT:
-                if (data != null) {
-                    task.getForms().add(data.getParcelableExtra("form"));
-                    formsField.setAdapter(new FormAdapter(task.getForms()));
-                } else Log.i("tag", "*****************");
+                FormAdapter adapter = (FormAdapter) formsField.getAdapter();
+                adapter.getForms().set(adapter.getLastIndex(), data.getParcelableExtra("form"));
                 break;
             case TASK_EDIT:
                 task = data.getParcelableExtra("task");

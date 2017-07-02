@@ -44,14 +44,17 @@ public class FormAdapter extends RecyclerView.Adapter<FormAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(final FormAdapter.MyViewHolder holder, int position) {
-        Activity activity = (Activity) holder.view.getContext();
         Form form = forms.get(position);
         holder.name.setText(form.getName());
         holder.address.setText(form.getAddress());
         holder.bar.setText(form.getBar());
-        holder.view.setOnClickListener(v -> activity.startActivityForResult(
-                new Intent(activity, FormEditActivity.class).putExtra("form", form),
-                TaskActivity.FORM_EDIT));
+        holder.view.setOnClickListener(v -> {
+            lastIndex = position;
+            Activity activity = (Activity) holder.view.getContext();
+            activity.startActivityForResult(
+                    new Intent(activity, FormEditActivity.class).putExtra("form", form),
+                    TaskActivity.FORM_EDIT);
+        });
     }
 
     @Override
