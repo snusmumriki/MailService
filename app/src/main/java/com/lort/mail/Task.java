@@ -26,11 +26,11 @@ public class Task implements Parcelable {
     @Expose
     private String status = "wait";
     @Expose
-    private List<Form> forms;
-    @Expose
     private String phone = "+7 (909) 777-77-77";
     @Expose
     private String contact = "Иванов Василий Иванович";
+
+    private List<Form> forms;
 
     public Task() {
 

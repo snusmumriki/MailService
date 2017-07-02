@@ -120,10 +120,10 @@ public class MainActivity extends AppCompatActivity {
 
             RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
             rv.setItemAnimator(itemAnimator);
-            rika.getTasks().subscribe(tasks -> {
+/*            rika.getTasks().subscribe(tasks -> {
                 TaskAdapter adapter = new TaskAdapter(tasks);
                 rv.setAdapter(adapter);
-            });
+            });*/
 
             return rootView;
         }
