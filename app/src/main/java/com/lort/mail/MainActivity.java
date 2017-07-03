@@ -25,6 +25,8 @@ import com.lort.mail.model.Rika;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
+
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         SwipeRefreshLayout mSwipeRefreshLayout;
         RecyclerView rv;
         Rika rika;
+        Disposable disposable;
 
         private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -113,15 +116,23 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh);
-            mSwipeRefreshLayout.setOnRefreshListener(this);
+            //mSwipeRefreshLayout.setOnRefreshListener(this);
             // делаем повеселее
             mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
+            mSwipeRefreshLayout.setOnRefreshListener(() -> {
+                disposable.dispose();
+                disposable = rika.getTasks().subscribe(tasks -> {
+                    TaskAdapter adapter = new TaskAdapter(tasks);
+                    rv.setAdapter(adapter);
+                });
+                mSwipeRefreshLayout.setRefreshing(false);
+            });
             rv = (RecyclerView) rootView.findViewById(R.id.rv_main);
             rv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
             rv.setItemAnimator(itemAnimator);
-            rika.getTasks().subscribe(tasks -> {
+            disposable = rika.getTasks().subscribe(tasks -> {
                 TaskAdapter adapter = new TaskAdapter(tasks);
                 rv.setAdapter(adapter);
             });

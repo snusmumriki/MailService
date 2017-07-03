@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.google.android.gms.vision.barcode.Barcode;
+import com.lort.mail.model.Rika;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,7 @@ public class TaskActivity extends AppCompatActivity {
     public static final int TASK_EDIT = 4;
     Task task;
     AlertDialog levelDialog;
+    Rika rika;
 
     private EditText addressField;
     private RecyclerView formsField;
@@ -57,6 +59,7 @@ public class TaskActivity extends AppCompatActivity {
         if (forms.size() != 0) {
             formsField.setAdapter(new FormAdapter(forms));
         }
+        rika = ((App) getApplication()).getRika();
 
         getSupportActionBar().setTitle(task.getName());
         addressField.setText(task.getAddress());
@@ -138,6 +141,7 @@ public class TaskActivity extends AppCompatActivity {
                 contactField.setText(task.getContact());
                 break;
         }
+        rika.putTask(task);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.lort.mail.model;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -9,6 +10,7 @@ import android.util.Log;
 
 import com.lort.mail.App;
 import com.lort.mail.R;
+import com.lort.mail.TaskActivity;
 
 public class RikaService extends Service {
     private Rika rika;
@@ -29,6 +31,8 @@ public class RikaService extends Service {
         rika = ((App) getApplication()).getRika();
         startForeground(1, new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Waiting for new tasks")
+                .setContentText(". . .")
                 .build());
     }
 
@@ -41,6 +45,9 @@ public class RikaService extends Service {
                         .setContentTitle("One new task")
                         .setContentText(task.getAddress())
                         .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentIntent(PendingIntent.getActivity(this, 1,
+                                new Intent(this, TaskActivity.class).putExtra("task", task),
+                                PendingIntent.FLAG_CANCEL_CURRENT))
                         .build()), Throwable::printStackTrace);
         return START_STICKY;
     }

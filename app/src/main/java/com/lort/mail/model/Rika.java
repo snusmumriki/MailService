@@ -30,36 +30,26 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 
 public class Rika {
-    public static final String BASE_URL = "https://rikaserver.herokuapp.com/";
+    public static final String URL = "http://89.218.67.174:8080/";
+    public static final String WS_URL = "ws://89.218.67.174:8080/ws";
     private Gson gson;
     private Noodle noodle;
     private RikaApi rikaApi;
-    private WebSocketEcho echo = new WebSocketEcho();
-    WebSocket webSocket;
+    private WebSocket webSocket;
 
     public Rika(Context applicationContext) {
         noodle = Noodle.with(applicationContext)
+                .addType(Task.class)
                 .build();
+
+        noodle.collectionOf(Task.class).put(new Task()).now();
 
         gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .readTimeout(120, TimeUnit.SECONDS)
-                .build();
-
-        Request request = new Request.Builder()
-                .url(BASE_URL + "ws")
-                .build();
-
-
-        webSocket = client.newWebSocket(request, echo);
-        client.dispatcher().executorService().shutdown();
-
-
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(URL)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -77,7 +67,18 @@ public class Rika {
     }
 
     public Flowable<Task> open() {
-        return echo.getProcessor().map(s -> gson.fromJson(s, Task.class))
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(120, TimeUnit.SECONDS)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(WS_URL)
+                .build();
+
+        MyWebSocketListener listener = new MyWebSocketListener();
+        webSocket = client.newWebSocket(request, listener);
+        //client.dispatcher().executorService().shutdown();
+        return listener.getProcessor().map(s -> gson.fromJson(s, Task.class))
                 .flatMap(task -> noodle.collectionOf(Task.class).put(task)
                         .toRxObservable().toFlowable(BackpressureStrategy.BUFFER))
                 .subscribeOn(Schedulers.io());
@@ -87,19 +88,23 @@ public class Rika {
         return webSocket.send(gson.toJson(form));
     }
 
-   /* public Flowable<List<Task>> getTasks() {
+    public Flowable<List<Task>> getTasks() {
         return noodle.collectionOf(Task.class)
                 .all().toRxObservable()
                 .toFlowable(BackpressureStrategy.BUFFER);
-    }*/
+    }
 
-    public Flowable<List<Task>> getTasks() {
+    public void putTask(Task task) {
+        noodle.collectionOf(Task.class).put(new Task()).now();
+    }
+
+    /*public Flowable<List<Task>> getTasks() {
         return Flowable.just(new Task())
                 .repeat(10).toList()
                 .toFlowable();
-    }
+    }*/
 
-    private static class WebSocketEcho extends WebSocketListener {
+    private static class MyWebSocketListener extends WebSocketListener {
         private PublishProcessor<String> processor = PublishProcessor.create();
 
         public PublishProcessor<String> getProcessor() {
