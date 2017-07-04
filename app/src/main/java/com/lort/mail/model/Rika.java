@@ -40,6 +40,7 @@ public class Rika {
     public Rika(Context applicationContext) {
         noodle = Noodle.with(applicationContext)
                 .addType(Task.class)
+                .addType(Form.class)
                 .build();
 
         noodle.collectionOf(Task.class).put(new Task()).now();

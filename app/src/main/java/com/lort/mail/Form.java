@@ -3,12 +3,15 @@ package com.lort.mail;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.noodle.Id;
+
 /**
  * Created by nikita on 22.06.17.
  */
 
 public class Form implements Parcelable {
-
+    @Id
+    public long id;
     public String name = "ТОО Новелла";
     public String bar = "01213790622";
     public String address = "ул. Пролетариата, д. 27";

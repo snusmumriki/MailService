@@ -16,7 +16,7 @@ import java.util.List;
 public class Task implements Parcelable {
 
     @Id
-    long id;
+    public long id;
     @Expose
     public String name = "ТОО Тамур";
     @Expose
@@ -48,6 +48,14 @@ public class Task implements Parcelable {
         this.address = address;
         this.time = time;
         this.status = status;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getContact() {
