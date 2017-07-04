@@ -141,7 +141,7 @@ public class TaskActivity extends AppCompatActivity {
                 contactField.setText(task.getContact());
                 break;
         }
-        rika.putTask(task);
+        //rika.putTask(task);
     }
 
     @Override
