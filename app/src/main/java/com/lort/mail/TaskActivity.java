@@ -115,33 +115,32 @@ public class TaskActivity extends AppCompatActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case BARCODE_CAPTURE:
-                Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BARCODE_OBJECT);
-                Log.i("tag", "Barcode read: " + barcode.displayValue);
-                startActivityForResult(new Intent(this, FormEditActivity.class)
-                        .putExtra("title", task.getName())
-                        .putExtra("barcode", barcode.displayValue), FORM_ADD);
-                break;
-            case FORM_ADD:
-                task.getForms().add(data.getParcelableExtra("form"));
-                formsField.setAdapter(new FormAdapter(task.getForms()));
-                break;
-            case FORM_EDIT:
-                FormAdapter adapter = (FormAdapter) formsField.getAdapter();
-                adapter.getForms().set(adapter.getLastIndex(), data.getParcelableExtra("form"));
-                break;
-            case TASK_EDIT:
-                task = data.getParcelableExtra("task");
-                getSupportActionBar().setTitle(task.getName());
-                addressField.setText(task.getAddress());
-                timeField.setText(task.getTime());
-                phoneField.setText(task.getPhone());
-                contactField.setText(task.getContact());
-                break;
-        }
-        //rika.putTask(task);
+        if (data != null)
+            switch (requestCode) {
+                case BARCODE_CAPTURE:
+                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BARCODE_OBJECT);
+                    Log.i("tag", "Barcode read: " + barcode.displayValue);
+                    startActivityForResult(new Intent(this, FormEditActivity.class)
+                            .putExtra("title", task.getName())
+                            .putExtra("barcode", barcode.displayValue), FORM_ADD);
+                    break;
+                case FORM_ADD:
+                    task.getForms().add(data.getParcelableExtra("form"));
+                    formsField.setAdapter(new FormAdapter(task.getForms()));
+                    break;
+                case FORM_EDIT:
+                    FormAdapter adapter = (FormAdapter) formsField.getAdapter();
+                    adapter.getForms().set(adapter.getLastIndex(), data.getParcelableExtra("form"));
+                    break;
+                case TASK_EDIT:
+                    task = data.getParcelableExtra("task");
+                    getSupportActionBar().setTitle(task.getName());
+                    addressField.setText(task.getAddress());
+                    timeField.setText(task.getTime());
+                    phoneField.setText(task.getPhone());
+                    contactField.setText(task.getContact());
+                    break;
+            }
     }
 
     @Override
